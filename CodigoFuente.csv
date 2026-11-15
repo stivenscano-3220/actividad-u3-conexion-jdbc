@@ -1,0 +1,157 @@
+﻿"archivo,""linea"",""codigo""";;;;;;;;
+"ProbadorConexion.java,""1"",""import java.sql.Connection";"
+ProbadorConexion.java"",""2"",""import java.sql.DriverManager";"
+ProbadorConexion.java"",""3"",""import java.sql.SQLException";"
+ProbadorConexion.java"",""4"",""""";;;;;
+"ProbadorConexion.java,""5"",""/**""";;;;;;;;
+"ProbadorConexion.java,""6"","" * Contiene la lógica de validación de una conexión JDBC, sin depender de la""";;;;;;;;
+"ProbadorConexion.java,""7"","" * interfaz gráfica. Recibe los datos de conexión y devuelve un resultado.""";;;;;;;;
+"ProbadorConexion.java,""8"","" */""";;;;;;;;
+"ProbadorConexion.java,""9"",""public class ProbadorConexion {""";;;;;;;;
+"ProbadorConexion.java,""10"",""""";;;;;;;;
+"ProbadorConexion.java,""11"",""    /** Resultado de una prueba: indica si fue exitosa y el mensaje a mostrar. */""";;;;;;;;
+"ProbadorConexion.java,""12"",""    public static class Resultado {""";;;;;;;;
+"ProbadorConexion.java,""13"",""        private final boolean exitoso";"
+ProbadorConexion.java"",""14"",""        private final String mensaje";"
+ProbadorConexion.java"",""15"",""""";;;;;;
+"ProbadorConexion.java,""16"",""        public Resultado(boolean exitoso, String mensaje) {""";;;;;;;;
+"ProbadorConexion.java,""17"",""            this.exitoso = exitoso";"
+ProbadorConexion.java"",""18"",""            this.mensaje = mensaje";"
+ProbadorConexion.java"",""19"",""        }""";;;;;;
+"ProbadorConexion.java,""20"",""""";;;;;;;;
+"ProbadorConexion.java,""21"",""        public boolean isExitoso() {""";;;;;;;;
+"ProbadorConexion.java,""22"",""            return exitoso";"
+ProbadorConexion.java"",""23"",""        }""";;;;;;;
+"ProbadorConexion.java,""24"",""""";;;;;;;;
+"ProbadorConexion.java,""25"",""        public String getMensaje() {""";;;;;;;;
+"ProbadorConexion.java,""26"",""            return mensaje";"
+ProbadorConexion.java"",""27"",""        }""";;;;;;;
+"ProbadorConexion.java,""28"",""    }""";;;;;;;;
+"ProbadorConexion.java,""29"",""""";;;;;;;;
+"ProbadorConexion.java,""30"",""    /** Intenta abrir y cerrar una conexión con los datos recibidos. */""";;;;;;;;
+"ProbadorConexion.java,""31"",""    public Resultado probar(String url, String usuario, String password) {""";;;;;;;;
+"ProbadorConexion.java,""32"",""        if (url == null || url.isBlank()) {""";;;;;;;;
+"ProbadorConexion.java,""33"",""            return new Resultado(false, """"Debe ingresar la URL de conexión."""")";"
+ProbadorConexion.java"",""34"",""        }""";;;;;;;
+"ProbadorConexion.java,""35"",""""";;;;;;;;
+"ProbadorConexion.java,""36"",""        try {""";;;;;;;;
+"ProbadorConexion.java,""37"",""            // Carga explícita del driver (puede lanzar ClassNotFoundException)""";;;;;;;;
+"ProbadorConexion.java,""38"",""            String driver = obtenerDriver(url)";"
+ProbadorConexion.java"",""39"",""            if (driver != null) {""";;;;;;;
+"ProbadorConexion.java,""40"",""                Class.forName(driver)";"
+ProbadorConexion.java"",""41"",""            }""";;;;;;;
+"ProbadorConexion.java,""42"",""""";;;;;;;;
+"ProbadorConexion.java,""43"",""            // try-with-resources: la conexión se cierra sola, haya éxito o error""";;;;;;;;
+"ProbadorConexion.java,""44"",""            try (Connection conexion = obtenerConexion(url, usuario, password)) {""";;;;;;;;
+"ProbadorConexion.java,""45"",""                return new Resultado(true, """"Conexión exitosa a: """" + url)";"
+ProbadorConexion.java"",""46"",""            }""";;;;;;;
+"ProbadorConexion.java,""47"",""""";;;;;;;;
+"ProbadorConexion.java,""48"",""        } catch (ClassNotFoundException ex) {""";;;;;;;;
+"ProbadorConexion.java,""49"",""            return new Resultado(false, """"Error del driver: no se encontró la clase """"""";;;;;;;;
+"ProbadorConexion.java,""50"",""                    + ex.getMessage() + """"\nVerifique que el .jar esté agregado al proyecto."""")";"
+ProbadorConexion.java"",""51"",""        } catch (SQLException ex) {""";;;;;;;
+"ProbadorConexion.java,""52"",""            return new Resultado(false, """"Fallo de conexión.\nDetalle técnico: """" + ex.getMessage())";"
+ProbadorConexion.java"",""53"",""        }""";;;;;;;
+"ProbadorConexion.java,""54"",""    }""";;;;;;;;
+"ProbadorConexion.java,""55"",""""";;;;;;;;
+"ProbadorConexion.java,""56"",""    private Connection obtenerConexion(String url, String usuario, String password)""";;;;;;;;
+"ProbadorConexion.java,""57"",""            throws SQLException {""";;;;;;;;
+"ProbadorConexion.java,""58"",""        if (usuario == null || usuario.isEmpty()) {""";;;;;;;;
+"ProbadorConexion.java,""59"",""            return DriverManager.getConnection(url)";"
+ProbadorConexion.java"",""60"",""        }""";;;;;;;
+"ProbadorConexion.java,""61"",""        return DriverManager.getConnection(url, usuario, password)";"
+ProbadorConexion.java"",""62"",""    }""";;;;;;;
+"ProbadorConexion.java,""63"",""""";;;;;;;;
+"ProbadorConexion.java,""64"",""    /** Devuelve el nombre de la clase del driver según el prefijo de la URL. */""";;;;;;;;
+"ProbadorConexion.java,""65"",""    private String obtenerDriver(String url) {""";;;;;;;;
+"ProbadorConexion.java,""66"",""        if (url.startsWith(""""jdbc:sqlite:"""")) return """"org.sqlite.JDBC""""";"
+ProbadorConexion.java"",""67"",""        if (url.startsWith(""""jdbc:mysql:"""")) return """"com.mysql.cj.jdbc.Driver""""";"
+ProbadorConexion.java"",""68"",""        if (url.startsWith(""""jdbc:postgresql:"""")) return """"org.postgresql.Driver""""";"
+ProbadorConexion.java"",""69"",""        return null";"
+ProbadorConexion.java"",""70"",""    }""";;;;
+"ProbadorConexion.java,""71"",""}""";;;;;;;;
+"ConexionTester.java,""1"",""import javax.swing.*";"
+ConexionTester.java"",""2"",""import java.awt.*";"
+ConexionTester.java"",""3"",""import java.awt.event.ActionEvent";"
+ConexionTester.java"",""4"",""""";;;;;
+"ConexionTester.java,""5"",""/**""";;;;;;;;
+"ConexionTester.java,""6"","" * Ventana principal de la aplicación. Se encarga únicamente de la interfaz:""";;;;;;;;
+"ConexionTester.java,""7"","" * toma los datos escritos por el usuario, delega la validación en""";;;;;;;;
+"ConexionTester.java,""8"","" * ProbadorConexion y muestra el resultado en pantalla.""";;;;;;;;
+"ConexionTester.java,""9"","" */""";;;;;;;;
+"ConexionTester.java,""10"",""public class ConexionTester extends JFrame {""";;;;;;;;
+"ConexionTester.java,""11"",""""";;;;;;;;
+"ConexionTester.java,""12"",""    private static final Color VERDE = new Color(0, 128, 0)";"
+ConexionTester.java"",""13"",""    private static final Color ROJO = new Color(190, 0, 0)";"
+ConexionTester.java"",""14"",""""";;;;;;
+"ConexionTester.java,""15"",""    private final ProbadorConexion probador = new ProbadorConexion()";"
+ConexionTester.java"",""16"",""""";;;;;;;
+"ConexionTester.java,""17"",""    private final JTextField txtUrl = new JTextField(""""jdbc:sqlite:inventario.db"""")";"
+ConexionTester.java"",""18"",""    private final JTextField txtUsuario = new JTextField()";"
+ConexionTester.java"",""19"",""    private final JPasswordField txtPassword = new JPasswordField()";"
+ConexionTester.java"",""20"",""    private final JButton btnProbar = new JButton(""""Probar conexión"""")";"
+ConexionTester.java"",""21"",""    private final JTextArea areaResultado = new JTextArea(8, 40)";"
+ConexionTester.java"",""22"",""""";;;
+"ConexionTester.java,""23"",""    public ConexionTester() {""";;;;;;;;
+"ConexionTester.java,""24"",""        super(""""Probador de conexión JDBC"""")";"
+ConexionTester.java"",""25"",""        construirInterfaz()";"
+ConexionTester.java"",""26"",""    }""";;;;;;
+"ConexionTester.java,""27"",""""";;;;;;;;
+"ConexionTester.java,""28"",""    private void construirInterfaz() {""";;;;;;;;
+"ConexionTester.java,""29"",""        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE)";"
+ConexionTester.java"",""30"",""        setLayout(new BorderLayout(10, 10))";"
+ConexionTester.java"",""31"",""""";;;;;;
+"ConexionTester.java,""32"",""        // Panel de formulario (GridLayout: 3 filas, 2 columnas)""";;;;;;;;
+"ConexionTester.java,""33"",""        JPanel panelFormulario = new JPanel(new GridLayout(3, 2, 5, 8))";"
+ConexionTester.java"",""34"",""        panelFormulario.setBorder(BorderFactory.createEmptyBorder(15, 15, 5, 15))";"
+ConexionTester.java"",""35"",""        panelFormulario.add(new JLabel(""""URL de conexión:""""))";"
+ConexionTester.java"",""36"",""        panelFormulario.add(txtUrl)";"
+ConexionTester.java"",""37"",""        panelFormulario.add(new JLabel(""""Nombre de usuario:""""))";"
+ConexionTester.java"",""38"",""        panelFormulario.add(txtUsuario)";"
+ConexionTester.java"",""39"",""        panelFormulario.add(new JLabel(""""Contraseña:""""))";"
+ConexionTester.java"",""40"",""        panelFormulario.add(txtPassword)";"
+ConexionTester.java"",""41"","""""
+"ConexionTester.java,""42"",""        // Panel con el botón""";;;;;;;;
+"ConexionTester.java,""43"",""        JPanel panelBoton = new JPanel()";"
+ConexionTester.java"",""44"",""        panelBoton.add(btnProbar)";"
+ConexionTester.java"",""45"",""""";;;;;;
+"ConexionTester.java,""46"",""        // Panel superior que agrupa formulario y botón""";;;;;;;;
+"ConexionTester.java,""47"",""        JPanel panelNorte = new JPanel(new BorderLayout())";"
+ConexionTester.java"",""48"",""        panelNorte.add(panelFormulario, BorderLayout.CENTER)";"
+ConexionTester.java"",""49"",""        panelNorte.add(panelBoton, BorderLayout.SOUTH)";"
+ConexionTester.java"",""50"",""""";;;;;
+"ConexionTester.java,""51"",""        // Área de resultados dentro de un JScrollPane""";;;;;;;;
+"ConexionTester.java,""52"",""        areaResultado.setEditable(false)";"
+ConexionTester.java"",""53"",""        areaResultado.setLineWrap(true)";"
+ConexionTester.java"",""54"",""        areaResultado.setWrapStyleWord(true)";"
+ConexionTester.java"",""55"",""        JScrollPane scroll = new JScrollPane(areaResultado)";"
+ConexionTester.java"",""56"",""        scroll.setBorder(BorderFactory.createTitledBorder(""""Resultado de la prueba""""))";"
+ConexionTester.java"",""57"",""""";;;
+"ConexionTester.java,""58"",""        add(panelNorte, BorderLayout.NORTH)";"
+ConexionTester.java"",""59"",""        add(scroll, BorderLayout.CENTER)";"
+ConexionTester.java"",""60"",""""";;;;;;
+"ConexionTester.java,""61"",""        // Evento del botón""";;;;;;;;
+"ConexionTester.java,""62"",""        btnProbar.addActionListener(this::alPulsarProbar)";"
+ConexionTester.java"",""63"",""""";;;;;;;
+"ConexionTester.java,""64"",""        pack()";"
+ConexionTester.java"",""65"",""        setLocationRelativeTo(null)";"
+ConexionTester.java"",""66"",""    }""";;;;;;
+"ConexionTester.java,""67"",""""";;;;;;;;
+"ConexionTester.java,""68"",""    private void alPulsarProbar(ActionEvent e) {""";;;;;;;;
+"ConexionTester.java,""69"",""        String url = txtUrl.getText().trim()";"
+ConexionTester.java"",""70"",""        String usuario = txtUsuario.getText().trim()";"
+ConexionTester.java"",""71"",""        String password = new String(txtPassword.getPassword())";"
+ConexionTester.java"",""72"",""""";;;;;
+"ConexionTester.java,""73"",""        ProbadorConexion.Resultado resultado = probador.probar(url, usuario, password)";"
+ConexionTester.java"",""74"",""        mostrarResultado(resultado.getMensaje(), resultado.isExitoso() ? VERDE : ROJO)";"
+ConexionTester.java"",""75"",""    }""";;;;;;
+"ConexionTester.java,""76"",""""";;;;;;;;
+"ConexionTester.java,""77"",""    private void mostrarResultado(String mensaje, Color color) {""";;;;;;;;
+"ConexionTester.java,""78"",""        areaResultado.setForeground(color)";"
+ConexionTester.java"",""79"",""        areaResultado.setText(mensaje)";"
+ConexionTester.java"",""80"",""    }""";;;;;;
+"ConexionTester.java,""81"",""""";;;;;;;;
+"ConexionTester.java,""82"",""    public static void main(String[] args) {""";;;;;;;;
+"ConexionTester.java,""83"",""        SwingUtilities.invokeLater(() -> new ConexionTester().setVisible(true))";"
+ConexionTester.java"",""84"",""    }""";;;;;;;
+"ConexionTester.java,""85"",""}""";;;;;;;;
